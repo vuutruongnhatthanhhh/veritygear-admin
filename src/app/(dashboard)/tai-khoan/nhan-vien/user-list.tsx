@@ -194,7 +194,7 @@ export function UserList({
                 </div>
               </div>
 
-              {isAdmin && !isSelf && (
+              {isAdmin && !isSelf && canActOnAccount && (
                 <div className="flex shrink-0 items-center gap-3">
                   <button
                     type="button"
@@ -203,23 +203,19 @@ export function UserList({
                   >
                     {roleEditId === user.id ? "Đóng" : "Vai trò"}
                   </button>
-                  {canActOnAccount && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => setExpandedId(expandedId === user.id ? null : user.id)}
-                        className="text-xs font-medium text-zinc-600 transition hover:text-zinc-900"
-                      >
-                        {expandedId === user.id ? "Đóng" : "Đổi MK"}
-                      </button>
-                      <DeleteButton userId={user.id} email={user.email} />
-                    </>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(expandedId === user.id ? null : user.id)}
+                    className="text-xs font-medium text-zinc-600 transition hover:text-zinc-900"
+                  >
+                    {expandedId === user.id ? "Đóng" : "Đổi MK"}
+                  </button>
+                  <DeleteButton userId={user.id} email={user.email} />
                 </div>
               )}
             </div>
 
-            {isAdmin && !isSelf && roleEditId === user.id && (
+            {isAdmin && !isSelf && canActOnAccount && roleEditId === user.id && (
               <RoleSelectRow userId={user.id} currentRole={user.role} onClose={() => setRoleEditId(null)} />
             )}
             {isAdmin && !isSelf && canActOnAccount && expandedId === user.id && (

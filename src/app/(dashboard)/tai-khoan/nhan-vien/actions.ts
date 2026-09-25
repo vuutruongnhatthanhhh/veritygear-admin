@@ -6,15 +6,6 @@ import { requireAdmin } from "@/lib/auth/roles";
 
 export type ActionState = { error?: string; success?: string } | null;
 
-async function countAdmins(): Promise<number> {
-  const adminClient = createAdminClient();
-  const { count } = await adminClient
-    .from("profiles")
-    .select("id", { count: "exact", head: true })
-    .eq("role", "admin");
-  return count ?? 0;
-}
-
 // ─── Create staff user ─────────────────────────────────────────────────────
 
 export async function createStaffUser(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -137,8 +128,8 @@ export async function changeStaffRole(_prev: ActionState, formData: FormData): P
 
   const adminClient = createAdminClient();
   const { data: current } = await adminClient.from("profiles").select("role").eq("id", userId).single();
-  if (current?.role === "admin" && role !== "admin" && (await countAdmins()) <= 1) {
-    return { error: "Không thể hạ quyền admin cuối cùng của hệ thống" };
+  if (current?.role === "admin") {
+    return { error: "Admin không thể thay đổi vai trò của admin khác" };
   }
 
   const { error: profileError } = await adminClient.from("profiles").update({ role }).eq("id", userId);
