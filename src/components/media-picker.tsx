@@ -9,6 +9,10 @@ export type BucketOption = { id: string; name: string };
 const BUCKET_LABELS: Record<string, string> = {
   "home-images": "Trang chủ",
   "about-images": "Giới thiệu",
+  "milestones-images": "Cột mốc",
+  "contact-images": "Liên hệ",
+  "product-images": "Sản phẩm",
+  "news-images": "Tin tức",
 };
 const labelFor = (b: BucketOption) => BUCKET_LABELS[b.id] ?? b.name;
 

@@ -23,6 +23,7 @@ const navItems: NavGroup[] = [
       { href: "/trang-chu/marquee", label: "Slide chữ" },
       { href: "/trang-chu/tinh-nang", label: "Tính năng" },
       { href: "/trang-chu/cau-chuyen-thuong-hieu", label: "Câu chuyện thương hiệu" },
+      { href: "/trang-chu/khu-vuc-san-pham", label: "Khu vực sản phẩm" },
       { href: "/trang-chu/danh-gia", label: "Đánh giá" },
       { href: "/trang-chu/ban-tin", label: "Bản tin" },
     ],
@@ -38,6 +39,51 @@ const navItems: NavGroup[] = [
       { href: "/gioi-thieu/doi-ngu", label: "Đội ngũ" },
       { href: "/gioi-thieu/thu-vien-anh", label: "Thư viện ảnh" },
       { href: "/gioi-thieu/cta", label: "CTA cuối trang" },
+    ],
+  },
+  {
+    label: "Cột mốc",
+    children: [
+      { href: "/cot-moc/banner", label: "Banner" },
+      { href: "/cot-moc/hanh-trinh", label: "Hành trình" },
+    ],
+  },
+  {
+    label: "Liên hệ",
+    children: [
+      { href: "/lien-he/banner", label: "Banner" },
+      { href: "/lien-he/thong-tin", label: "Thông tin liên hệ" },
+      { href: "/lien-he/ban-do", label: "Bản đồ" },
+      { href: "/lien-he/email-nhan", label: "Email nhận tin nhắn" },
+      { href: "/lien-he/cau-hoi-thuong-gap", label: "Câu hỏi thường gặp" },
+    ],
+  },
+  {
+    label: "Sản phẩm",
+    children: [
+      { href: "/san-pham", label: "Sản phẩm" },
+      { href: "/san-pham/danh-muc", label: "Danh mục" },
+    ],
+  },
+  {
+    label: "Tin tức",
+    children: [
+      { href: "/tin-tuc", label: "Bài viết" },
+      { href: "/tin-tuc/danh-muc", label: "Danh mục" },
+    ],
+  },
+  {
+    label: "Đơn hàng",
+    children: [
+      { href: "/don-hang", label: "Danh sách đơn hàng" },
+      { href: "/cau-hinh/van-chuyen", label: "Vận chuyển" },
+    ],
+  },
+  {
+    label: "Cấu hình",
+    children: [
+      { href: "/cau-hinh/mang-xa-hoi", label: "Mạng xã hội" },
+      { href: "/cau-hinh/footer", label: "Footer" },
     ],
   },
 ];
@@ -61,8 +107,8 @@ export function NavHeader({ email, role }: { email: string; role: string }) {
   const itemCls = (active: boolean) =>
     `px-3 py-2 text-sm rounded-md transition whitespace-nowrap flex items-center justify-between gap-2 ${
       active
-        ? "bg-zinc-100 text-zinc-900 font-medium"
-        : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+        ? "bg-zinc-900 text-white font-medium"
+        : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200"
     }`;
 
   const nav = (onNavigate?: () => void) => (
