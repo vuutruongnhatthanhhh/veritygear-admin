@@ -168,6 +168,11 @@ export function UserList({
     <div className="space-y-2">
       {users.map((user) => {
         const isSelf = user.id === currentUserId;
+        // Admins can't reset another admin's password or delete another
+        // admin's account — only role changes and mod-targeting actions
+        // stay available. Server actions enforce this too; this just keeps
+        // the buttons from being shown for an action that would 400.
+        const canActOnAccount = user.role !== "admin";
 
         return (
           <div key={user.id} className="rounded-lg border border-zinc-200 px-4 py-3">
@@ -198,14 +203,18 @@ export function UserList({
                   >
                     {roleEditId === user.id ? "Đóng" : "Vai trò"}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setExpandedId(expandedId === user.id ? null : user.id)}
-                    className="text-xs font-medium text-zinc-600 transition hover:text-zinc-900"
-                  >
-                    {expandedId === user.id ? "Đóng" : "Đổi MK"}
-                  </button>
-                  <DeleteButton userId={user.id} email={user.email} />
+                  {canActOnAccount && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setExpandedId(expandedId === user.id ? null : user.id)}
+                        className="text-xs font-medium text-zinc-600 transition hover:text-zinc-900"
+                      >
+                        {expandedId === user.id ? "Đóng" : "Đổi MK"}
+                      </button>
+                      <DeleteButton userId={user.id} email={user.email} />
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -213,7 +222,7 @@ export function UserList({
             {isAdmin && !isSelf && roleEditId === user.id && (
               <RoleSelectRow userId={user.id} currentRole={user.role} onClose={() => setRoleEditId(null)} />
             )}
-            {isAdmin && !isSelf && expandedId === user.id && (
+            {isAdmin && !isSelf && canActOnAccount && expandedId === user.id && (
               <ChangePasswordRow userId={user.id} onClose={() => setExpandedId(null)} />
             )}
           </div>

@@ -110,6 +110,11 @@ export async function adminResetPassword(_prev: ActionState, formData: FormData)
   if (newPassword.length < 6) return { error: "Mật khẩu phải có ít nhất 6 ký tự" };
 
   const adminClient = createAdminClient();
+  const { data: targetProfile } = await adminClient.from("profiles").select("role").eq("id", userId).single();
+  if (targetProfile?.role === "admin") {
+    return { error: "Admin không thể đổi mật khẩu của admin khác" };
+  }
+
   const { error } = await adminClient.auth.admin.updateUserById(userId, { password: newPassword });
   if (error) return { error: error.message };
   return { success: "Đã đổi mật khẩu thành công" };
@@ -163,8 +168,8 @@ export async function deleteStaffUser(_prev: ActionState, formData: FormData): P
 
   const adminClient = createAdminClient();
   const { data: profile } = await adminClient.from("profiles").select("role").eq("id", userId).single();
-  if (profile?.role === "admin" && (await countAdmins()) <= 1) {
-    return { error: "Không thể xóa admin cuối cùng của hệ thống" };
+  if (profile?.role === "admin") {
+    return { error: "Admin không thể xóa admin khác" };
   }
 
   const { error } = await adminClient.auth.admin.deleteUser(userId);
