@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { OrderStatusForm } from "./order-status-form";
+import { GhnShippingSection } from "./ghn-shipping-section";
 
 export const metadata = { title: "Chi tiết đơn hàng" };
 
@@ -50,8 +51,18 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
       <div className="rounded-xl border border-zinc-200 bg-white p-6">
         <h2 className="mb-3 text-sm font-semibold text-zinc-900">Trạng thái đơn hàng</h2>
-        <OrderStatusForm id={order.id} status={order.status} />
+        <OrderStatusForm id={order.id} status={order.status} hasGhnOrder={!!order.ghn_order_code} />
       </div>
+
+      <GhnShippingSection
+        order={{
+          id: order.id,
+          ghn_order_code: order.ghn_order_code,
+          ghn_status: order.ghn_status,
+          to_district_id: order.to_district_id,
+          to_ward_code: order.to_ward_code,
+        }}
+      />
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div className="rounded-xl border border-zinc-200 bg-white p-6">
@@ -61,7 +72,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             <p>{order.phone}</p>
             <p>{order.email}</p>
             <p>
-              {order.address}, {order.city}
+              {order.address}
+              {order.to_ward_name ? `, ${order.to_ward_name}` : ""}
+              {order.to_district_name ? `, ${order.to_district_name}` : ""}, {order.city}
             </p>
             {order.note && <p className="mt-2 text-zinc-900">Ghi chú: {order.note}</p>}
           </div>

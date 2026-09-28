@@ -61,6 +61,7 @@ export async function upsertProduct(_prev: string | null, formData: FormData): P
     is_spotlight: formData.get("is_spotlight") === "on",
     is_lineup: formData.get("is_lineup") === "on",
     sort_order: parseInt(formData.get("sort_order") as string) || 0,
+    weight_grams: parseInt(formData.get("weight_grams") as string) || 500,
     updated_at: new Date().toISOString(),
   };
 

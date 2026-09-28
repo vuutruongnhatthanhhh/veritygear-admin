@@ -29,6 +29,7 @@ type Product = {
   is_spotlight: boolean;
   is_lineup: boolean;
   sort_order: number;
+  weight_grams: number;
 };
 
 type Spec = { label_vi: string; label_en: string; value_vi: string; value_en: string };
@@ -95,6 +96,11 @@ export function ProductForm({
           <input name="compare_at_price" type="number" min={0} defaultValue={item?.compare_at_price ?? ""} className={inputCls} />
         </Field>
       </div>
+
+      <Field label="Cân nặng (gram)">
+        <input name="weight_grams" type="number" min={1} defaultValue={item?.weight_grams ?? 500} required className={`${inputCls} max-w-40`} />
+      </Field>
+      <p className="-mt-4 text-xs text-zinc-400">Dùng để tính phí vận chuyển GHN khi khách đặt hàng.</p>
 
       <BilingualPair
         label="Nhãn (tùy chọn — vd: Bán chạy / Mới / Giảm giá)"
