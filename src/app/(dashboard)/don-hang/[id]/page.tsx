@@ -82,8 +82,25 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         <div className="rounded-xl border border-zinc-200 bg-white p-6">
           <h2 className="mb-3 text-sm font-semibold text-zinc-900">Thanh toán</h2>
           <p className="text-sm text-zinc-900">
-            {order.payment_method === "cod" ? "Thanh toán khi nhận hàng (COD)" : "Chuyển khoản ngân hàng"}
+            {order.payment_method === "cod" ? "Thanh toán khi nhận hàng (COD)" : "Chuyển khoản ngân hàng (PayOS)"}
           </p>
+          {order.payment_method === "transfer" && (
+            <span
+              className={`mt-2 inline-block rounded-full border px-2.5 py-1 text-xs ${
+                order.payment_status === "paid"
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  : order.payment_status === "cancelled"
+                    ? "border-red-200 bg-red-50 text-red-700"
+                    : "border-amber-200 bg-amber-50 text-amber-700"
+              }`}
+            >
+              {order.payment_status === "paid"
+                ? "Đã thanh toán"
+                : order.payment_status === "cancelled"
+                  ? "Đã hủy thanh toán"
+                  : "Chưa thanh toán"}
+            </span>
+          )}
         </div>
       </div>
 

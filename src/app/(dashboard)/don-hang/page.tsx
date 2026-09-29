@@ -31,7 +31,7 @@ export default async function DonHangPage() {
   const supabase = await createClient();
   const { data: orders, error } = await supabase
     .from("orders")
-    .select("id, order_code, full_name, phone, total, status, created_at")
+    .select("id, order_code, full_name, phone, total, status, payment_method, payment_status, created_at")
     .order("created_at", { ascending: false });
 
   return (
@@ -70,6 +70,11 @@ export default async function DonHangPage() {
                     >
                       {STATUS_LABELS[o.status] ?? o.status}
                     </span>
+                    {o.payment_method === "transfer" && o.payment_status !== "paid" && (
+                      <span className="shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs text-amber-700">
+                        Chưa thanh toán
+                      </span>
+                    )}
                   </div>
                   <div className="mt-0.5 truncate text-xs text-zinc-400">
                     {o.full_name} · {o.phone} · {formatDate(o.created_at)}
