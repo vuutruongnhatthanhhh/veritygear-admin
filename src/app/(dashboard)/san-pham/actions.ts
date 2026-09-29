@@ -11,6 +11,17 @@ function removeImageIfOwned(admin: ReturnType<typeof createAdminClient>, url: st
   if (path) admin.storage.from("product-images").remove([path]);
 }
 
+function parseImages(raw: string | null): string[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((u) => typeof u === "string" && u.trim() !== "");
+  } catch {
+    return [];
+  }
+}
+
 function parseSpecs(raw: string | null): SpecInput[] {
   if (!raw) return [];
   try {
@@ -38,6 +49,7 @@ export async function upsertProduct(_prev: string | null, formData: FormData): P
   const selectedUrl = ((formData.get("selected_url") as string) ?? "").trim();
   const categoryIdRaw = formData.get("category_id") as string;
   const specs = parseSpecs(formData.get("specs_json") as string | null);
+  const galleryImages = parseImages(formData.get("images_json") as string | null);
 
   if (!slug) return "Vui lòng nhập slug";
 
@@ -86,6 +98,9 @@ export async function upsertProduct(_prev: string | null, formData: FormData): P
 
     const { error: deleteSpecsError } = await admin.from("product_specs").delete().eq("product_id", productId);
     if (deleteSpecsError) return deleteSpecsError.message;
+
+    const { error: deleteImagesError } = await admin.from("product_images").delete().eq("product_id", productId);
+    if (deleteImagesError) return deleteImagesError.message;
   } else {
     if (selectedUrl) payload.image_url = selectedUrl;
     const { data: inserted, error } = await admin.from("products").insert(payload).select("id").single();
@@ -98,6 +113,13 @@ export async function upsertProduct(_prev: string | null, formData: FormData): P
       specs.map((s, i) => ({ product_id: productId, sort_order: i, ...s })),
     );
     if (specsError) return specsError.message;
+  }
+
+  if (galleryImages.length > 0) {
+    const { error: imagesError } = await admin.from("product_images").insert(
+      galleryImages.map((image_url, i) => ({ product_id: productId, sort_order: i, image_url })),
+    );
+    if (imagesError) return imagesError.message;
   }
 
   revalidatePath("/san-pham");

@@ -86,6 +86,10 @@ const navItems: NavGroup[] = [
       { href: "/cau-hinh/footer", label: "Footer" },
     ],
   },
+  {
+    label: "Trang tùy chỉnh",
+    children: [{ href: "/trang-tuy-chinh", label: "Danh sách trang" }],
+  },
 ];
 
 const allHrefs = navItems.flatMap((item) => item.children.map((c) => c.href));

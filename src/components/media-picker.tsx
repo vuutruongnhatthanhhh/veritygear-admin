@@ -13,6 +13,7 @@ const BUCKET_LABELS: Record<string, string> = {
   "contact-images": "Liên hệ",
   "product-images": "Sản phẩm",
   "news-images": "Tin tức",
+  "custom-pages-images": "Trang tùy chỉnh",
 };
 const labelFor = (b: BucketOption) => BUCKET_LABELS[b.id] ?? b.name;
 

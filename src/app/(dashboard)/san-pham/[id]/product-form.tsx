@@ -9,6 +9,7 @@ import { Field, inputCls } from "@/components/cms-field";
 import { announceToast } from "@/components/toast";
 import { upsertProduct } from "../actions";
 import { SpecsEditor } from "./specs-editor";
+import { GalleryImagesEditor } from "./gallery-images-editor";
 
 type Product = {
   id: number;
@@ -39,10 +40,12 @@ export function ProductForm({
   item,
   specs,
   categories,
+  galleryImages,
 }: {
   item: Product | null;
   specs: Spec[];
   categories: Category[];
+  galleryImages: string[];
 }) {
   const [error, action, pending] = useActionState(upsertProduct, null);
   const prevPending = useRef(false);
@@ -65,6 +68,8 @@ export function ProductForm({
       <input type="hidden" name="id" value={item?.id ?? ""} />
 
       <ImageField label="Ảnh sản phẩm" initialUrl={item?.image_url ?? null} bucket="product-images" pickerTitle="Chọn ảnh sản phẩm" />
+
+      <GalleryImagesEditor initialImages={galleryImages} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Tên sản phẩm">
