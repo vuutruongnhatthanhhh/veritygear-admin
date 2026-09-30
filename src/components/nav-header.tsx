@@ -82,6 +82,7 @@ const navItems: NavGroup[] = [
   {
     label: "Cấu hình",
     children: [
+      { href: "/cau-hinh/seo", label: "SEO" },
       { href: "/cau-hinh/mang-xa-hoi", label: "Mạng xã hội" },
       { href: "/cau-hinh/footer", label: "Footer" },
     ],
