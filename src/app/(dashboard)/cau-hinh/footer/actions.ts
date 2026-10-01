@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateSiteWide } from "@/lib/revalidateClient";
 
 export async function upsertFooter(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -15,5 +16,6 @@ export async function upsertFooter(_prev: string | null, formData: FormData): Pr
   if (error) return error.message;
 
   revalidatePath("/cau-hinh/footer");
+  await revalidateSiteWide();
   return null;
 }

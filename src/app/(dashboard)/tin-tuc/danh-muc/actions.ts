@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateNewsList } from "@/lib/revalidateClient";
 
 export async function upsertNewsCategory(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -27,6 +28,7 @@ export async function upsertNewsCategory(_prev: string | null, formData: FormDat
   }
 
   revalidatePath("/tin-tuc/danh-muc");
+  await revalidateNewsList();
   return null;
 }
 
@@ -36,4 +38,5 @@ export async function deleteNewsCategory(formData: FormData) {
 
   await admin.from("news_categories").delete().eq("id", parseInt(id));
   revalidatePath("/tin-tuc/danh-muc");
+  await revalidateNewsList();
 }

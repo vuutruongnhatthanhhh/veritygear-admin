@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateAbout } from "@/lib/revalidateClient";
 
 const ICON_KEYS = ["precision", "noCompromise", "durability", "community"];
 
@@ -31,6 +32,7 @@ export async function upsertValueItem(_prev: string | null, formData: FormData):
   }
 
   revalidatePath("/gioi-thieu/gia-tri-cot-loi");
+  await revalidateAbout();
   return null;
 }
 
@@ -40,4 +42,5 @@ export async function deleteValueItem(formData: FormData) {
 
   await admin.from("about_values").delete().eq("id", parseInt(id));
   revalidatePath("/gioi-thieu/gia-tri-cot-loi");
+  await revalidateAbout();
 }

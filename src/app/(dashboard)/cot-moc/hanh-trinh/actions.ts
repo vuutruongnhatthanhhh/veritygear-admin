@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateMilestones } from "@/lib/revalidateClient";
 
 export async function upsertMilestone(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -26,6 +27,7 @@ export async function upsertMilestone(_prev: string | null, formData: FormData):
   }
 
   revalidatePath("/cot-moc/hanh-trinh");
+  await revalidateMilestones();
   return null;
 }
 
@@ -35,4 +37,5 @@ export async function deleteMilestone(formData: FormData) {
 
   await admin.from("milestones_timeline").delete().eq("id", parseInt(id));
   revalidatePath("/cot-moc/hanh-trinh");
+  await revalidateMilestones();
 }

@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateAbout } from "@/lib/revalidateClient";
 
 export async function upsertStat(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -24,6 +25,7 @@ export async function upsertStat(_prev: string | null, formData: FormData): Prom
   }
 
   revalidatePath("/gioi-thieu/thong-ke");
+  await revalidateAbout();
   return null;
 }
 
@@ -33,4 +35,5 @@ export async function deleteStat(formData: FormData) {
 
   await admin.from("about_stats").delete().eq("id", parseInt(id));
   revalidatePath("/gioi-thieu/thong-ke");
+  await revalidateAbout();
 }

@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateContact } from "@/lib/revalidateClient";
 
 const ICON_KEYS = ["location", "phone", "email", "hours"];
 
@@ -32,6 +33,7 @@ export async function upsertContactCard(_prev: string | null, formData: FormData
   }
 
   revalidatePath("/lien-he/thong-tin");
+  await revalidateContact();
   return null;
 }
 
@@ -41,4 +43,5 @@ export async function deleteContactCard(formData: FormData) {
 
   await admin.from("contact_info_cards").delete().eq("id", parseInt(id));
   revalidatePath("/lien-he/thong-tin");
+  await revalidateContact();
 }

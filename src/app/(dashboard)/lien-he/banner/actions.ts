@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateContact } from "@/lib/revalidateClient";
 
 function removeImageIfOwned(admin: ReturnType<typeof createAdminClient>, url: string | null) {
   if (!url) return;
@@ -43,5 +44,6 @@ export async function upsertContactHero(_prev: string | null, formData: FormData
   if (error) return error.message;
 
   revalidatePath("/lien-he/banner");
+  await revalidateContact();
   return null;
 }

@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateProduct, revalidateShop } from "@/lib/revalidateClient";
 
 type SpecInput = { label_vi: string; label_en: string; value_vi: string; value_en: string };
 
@@ -123,6 +124,7 @@ export async function upsertProduct(_prev: string | null, formData: FormData): P
   }
 
   revalidatePath("/san-pham");
+  await revalidateProduct(slug);
   return null;
 }
 
@@ -135,4 +137,5 @@ export async function deleteProduct(formData: FormData) {
 
   await admin.from("products").delete().eq("id", parseInt(id));
   revalidatePath("/san-pham");
+  await revalidateShop();
 }

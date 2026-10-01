@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateAbout } from "@/lib/revalidateClient";
 
 export async function upsertAboutMission(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -18,5 +19,6 @@ export async function upsertAboutMission(_prev: string | null, formData: FormDat
   if (error) return error.message;
 
   revalidatePath("/gioi-thieu/su-menh");
+  await revalidateAbout();
   return null;
 }

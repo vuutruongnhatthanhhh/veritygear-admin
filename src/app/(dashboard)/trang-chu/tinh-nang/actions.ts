@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateHome } from "@/lib/revalidateClient";
 
 const ICON_KEYS = ["precision", "warranty", "shipping", "community"];
 
@@ -31,6 +32,7 @@ export async function upsertFeatureItem(_prev: string | null, formData: FormData
   }
 
   revalidatePath("/trang-chu/tinh-nang");
+  await revalidateHome();
   return null;
 }
 
@@ -40,4 +42,5 @@ export async function deleteFeatureItem(formData: FormData) {
 
   await admin.from("home_feature_strip_items").delete().eq("id", parseInt(id));
   revalidatePath("/trang-chu/tinh-nang");
+  await revalidateHome();
 }

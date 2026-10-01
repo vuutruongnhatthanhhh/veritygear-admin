@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateHome } from "@/lib/revalidateClient";
 
 export async function upsertMarqueeItem(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -24,6 +25,7 @@ export async function upsertMarqueeItem(_prev: string | null, formData: FormData
   }
 
   revalidatePath("/trang-chu/marquee");
+  await revalidateHome();
   return null;
 }
 
@@ -33,4 +35,5 @@ export async function deleteMarqueeItem(formData: FormData) {
 
   await admin.from("home_marquee_items").delete().eq("id", parseInt(id));
   revalidatePath("/trang-chu/marquee");
+  await revalidateHome();
 }

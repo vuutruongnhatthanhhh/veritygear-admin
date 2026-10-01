@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateMilestones } from "@/lib/revalidateClient";
 
 function removeImageIfOwned(admin: ReturnType<typeof createAdminClient>, url: string | null) {
   if (!url) return;
@@ -41,5 +42,6 @@ export async function upsertMilestonesHero(_prev: string | null, formData: FormD
   if (error) return error.message;
 
   revalidatePath("/cot-moc/banner");
+  await revalidateMilestones();
   return null;
 }

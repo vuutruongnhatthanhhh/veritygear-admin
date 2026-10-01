@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateContact } from "@/lib/revalidateClient";
 
 export async function upsertContactMap(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -21,5 +22,6 @@ export async function upsertContactMap(_prev: string | null, formData: FormData)
   if (error) return error.message;
 
   revalidatePath("/lien-he/ban-do");
+  await revalidateContact();
   return null;
 }

@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateHome } from "@/lib/revalidateClient";
 
 function removeImageIfOwned(admin: ReturnType<typeof createAdminClient>, url: string | null) {
   if (!url) return;
@@ -44,5 +45,6 @@ export async function upsertBrandStory(_prev: string | null, formData: FormData)
   if (error) return error.message;
 
   revalidatePath("/trang-chu/cau-chuyen-thuong-hieu");
+  await revalidateHome();
   return null;
 }

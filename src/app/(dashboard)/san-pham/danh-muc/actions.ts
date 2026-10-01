@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateShop } from "@/lib/revalidateClient";
 
 function removeImageIfOwned(admin: ReturnType<typeof createAdminClient>, url: string | null) {
   if (!url) return;
@@ -49,6 +50,7 @@ export async function upsertCategory(_prev: string | null, formData: FormData): 
   }
 
   revalidatePath("/san-pham/danh-muc");
+  await revalidateShop();
   return null;
 }
 
@@ -61,4 +63,5 @@ export async function deleteCategory(formData: FormData) {
 
   await admin.from("product_categories").delete().eq("id", parseInt(id));
   revalidatePath("/san-pham/danh-muc");
+  await revalidateShop();
 }

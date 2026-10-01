@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateHome } from "@/lib/revalidateClient";
 
 export async function upsertCategoryGrid(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -21,6 +22,7 @@ export async function upsertCategoryGrid(_prev: string | null, formData: FormDat
   if (error) return error.message;
 
   revalidatePath("/trang-chu/khu-vuc-san-pham");
+  await revalidateHome();
   return null;
 }
 
@@ -40,6 +42,7 @@ export async function upsertFeaturedProducts(_prev: string | null, formData: For
   if (error) return error.message;
 
   revalidatePath("/trang-chu/khu-vuc-san-pham");
+  await revalidateHome();
   return null;
 }
 
@@ -57,5 +60,6 @@ export async function upsertProductSpotlight(_prev: string | null, formData: For
   if (error) return error.message;
 
   revalidatePath("/trang-chu/khu-vuc-san-pham");
+  await revalidateHome();
   return null;
 }

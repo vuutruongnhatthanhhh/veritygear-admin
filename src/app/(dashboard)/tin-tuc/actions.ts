@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateArticle, revalidateNewsList } from "@/lib/revalidateClient";
 
 function removeImageIfOwned(admin: ReturnType<typeof createAdminClient>, url: string | null) {
   if (!url) return;
@@ -59,6 +60,7 @@ export async function upsertNewsArticle(_prev: string | null, formData: FormData
   }
 
   revalidatePath("/tin-tuc");
+  await revalidateArticle(slug);
   return null;
 }
 
@@ -71,4 +73,5 @@ export async function deleteNewsArticle(formData: FormData) {
 
   await admin.from("news_articles").delete().eq("id", parseInt(id));
   revalidatePath("/tin-tuc");
+  await revalidateNewsList();
 }

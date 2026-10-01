@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateCustomPage } from "@/lib/revalidateClient";
 
 export async function upsertCustomPage(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -33,6 +34,7 @@ export async function upsertCustomPage(_prev: string | null, formData: FormData)
   }
 
   revalidatePath("/trang-tuy-chinh");
+  await revalidateCustomPage(slug);
   return null;
 }
 
@@ -42,4 +44,5 @@ export async function deleteCustomPage(formData: FormData) {
 
   await admin.from("custom_pages").delete().eq("id", parseInt(id));
   revalidatePath("/trang-tuy-chinh");
+  await revalidateCustomPage();
 }

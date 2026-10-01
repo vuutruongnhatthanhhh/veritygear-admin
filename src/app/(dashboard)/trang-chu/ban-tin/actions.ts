@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateHome } from "@/lib/revalidateClient";
 
 export async function upsertNewsletter(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -20,5 +21,6 @@ export async function upsertNewsletter(_prev: string | null, formData: FormData)
   if (error) return error.message;
 
   revalidatePath("/trang-chu/ban-tin");
+  await revalidateHome();
   return null;
 }

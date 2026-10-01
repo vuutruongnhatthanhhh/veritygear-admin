@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { revalidateContact } from "@/lib/revalidateClient";
 
 export async function upsertFaq(_prev: string | null, formData: FormData): Promise<string | null> {
   const admin = createAdminClient();
@@ -25,6 +26,7 @@ export async function upsertFaq(_prev: string | null, formData: FormData): Promi
   }
 
   revalidatePath("/lien-he/cau-hoi-thuong-gap");
+  await revalidateContact();
   return null;
 }
 
@@ -34,4 +36,5 @@ export async function deleteFaq(formData: FormData) {
 
   await admin.from("contact_faqs").delete().eq("id", parseInt(id));
   revalidatePath("/lien-he/cau-hoi-thuong-gap");
+  await revalidateContact();
 }
