@@ -5,14 +5,23 @@
 async function revalidateClient(input: { paths?: string[]; layoutPaths?: string[] }): Promise<void> {
   const baseUrl = process.env.CLIENT_SITE_URL;
   const secret = process.env.REVALIDATE_SECRET;
-  if (!baseUrl || !secret) return;
+  if (!baseUrl || !secret) {
+    console.error("Skipping client revalidation: CLIENT_SITE_URL or REVALIDATE_SECRET is not set.");
+    return;
+  }
 
   try {
-    await fetch(`${baseUrl.replace(/\/+$/, "")}/api/revalidate`, {
+    const res = await fetch(`${baseUrl.replace(/\/+$/, "")}/api/revalidate`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-revalidate-secret": secret },
       body: JSON.stringify(input),
     });
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.error(`Client revalidation failed: HTTP ${res.status} ${body}`.trim());
+      return;
+    }
+    console.log("Client revalidation ok:", JSON.stringify(input));
   } catch (err) {
     console.error("Failed to revalidate client site:", err);
   }
