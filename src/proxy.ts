@@ -66,5 +66,8 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  // Excludes /api routes too — they're never page navigations, and each one
+  // already does its own auth check (see src/app/api/media/*, which 401s
+  // itself rather than relying on this redirect-to-/login behavior).
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 };
