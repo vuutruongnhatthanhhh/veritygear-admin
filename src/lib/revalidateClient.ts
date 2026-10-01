@@ -27,8 +27,14 @@ async function revalidateClient(input: { paths?: string[]; layoutPaths?: string[
   }
 }
 
+// The client's URLs are unprefixed for Vietnamese (next-intl "as-needed"
+// prefix: "/gioi-thieu") but the actual route files — and therefore the
+// Next.js cache keys revalidatePath() must match — always live under
+// app/[locale]/..., so the internal path for Vietnamese still needs the
+// "/vi" segment even though it never appears in the public URL.
 function withLocales(path: string): string[] {
-  return [path, `/en${path === "/" ? "" : path}`];
+  const suffix = path === "/" ? "" : path;
+  return [`/vi${suffix}`, `/en${suffix}`];
 }
 
 export function revalidateHome(): Promise<void> {
@@ -60,7 +66,7 @@ export function revalidateArticle(slug: string): Promise<void> {
 // refresh that footer link list everywhere right away.
 export function revalidateCustomPage(slug?: string): Promise<void> {
   const paths = slug ? [...withLocales("/"), ...withLocales(`/${slug}`)] : withLocales("/");
-  return revalidateClient({ paths, layoutPaths: ["/"] });
+  return revalidateClient({ paths, layoutPaths: ["/[locale]"] });
 }
 
 export function revalidateAbout(): Promise<void> {
@@ -78,6 +84,10 @@ export function revalidateContact(): Promise<void> {
 
 // Footer tagline, social links, and site-wide SEO defaults render in the root
 // layout on every single page — only a layout-wide revalidation reaches all of them.
+// "/[locale]" is the literal file-structure pattern for the root layout
+// (app/[locale]/layout.tsx) — this purges every page under it, in one call,
+// for both locales at once (see the revalidatePath docs' "revalidating all
+// data" example, adapted for this app's locale-segmented root layout).
 export function revalidateSiteWide(): Promise<void> {
-  return revalidateClient({ layoutPaths: ["/"] });
+  return revalidateClient({ layoutPaths: ["/[locale]"] });
 }
