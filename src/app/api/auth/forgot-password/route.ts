@@ -1,23 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getTransporter, hasSmtpConfig, getMailFrom, emailLayout, emailButtonHtml } from "@/lib/mailer";
+import { getTransporter, hasSmtpConfig, getMailFrom, emailLayout } from "@/lib/mailer";
 import { isRateLimited, getClientIp } from "@/lib/rateLimit";
 
-function resetPasswordEmailHtml(actionLink: string) {
+// Shows the OTP as plain text (not a clickable link) — some email clients /
+// security scanners auto-visit links in emails, which would silently consume
+// a one-time recovery link before the user ever clicks it. A typed code has
+// nothing for a scanner to click, so it can't be burned that way.
+function resetPasswordEmailHtml(otp: string) {
   return emailLayout(`
     <h2 style="margin:0 0 12px; font-size: 20px;">Đặt lại mật khẩu</h2>
     <p style="color:#444; line-height:1.6;">
-      Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản quản trị này. Nhấn vào nút bên dưới để đặt mật khẩu mới.
+      Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản quản trị này. Nhập mã xác nhận sau trên trang đặt lại mật khẩu:
     </p>
-    ${emailButtonHtml(actionLink, "ĐẶT LẠI MẬT KHẨU")}
+    <p style="text-align:center; margin: 28px 0;">
+      <span style="display:inline-block; background:#0A0A0A; color:#FAFAF9; font-weight:700; letter-spacing:0.3em; font-size:28px; padding:16px 28px;">
+        ${otp}
+      </span>
+    </p>
     <p style="color:#999; font-size:12px; line-height:1.6;">
-      Nếu bạn không yêu cầu điều này, có thể bỏ qua email này.
+      Mã có hiệu lực trong thời gian ngắn. Nếu bạn không yêu cầu điều này, có thể bỏ qua email này.
     </p>
   `);
 }
 
-function resetPasswordEmailText(actionLink: string) {
-  return `Đặt lại mật khẩu\n\nChúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản quản trị này. Mở liên kết sau để đặt mật khẩu mới:\n${actionLink}\n\nNếu bạn không yêu cầu điều này, có thể bỏ qua email này.`;
+function resetPasswordEmailText(otp: string) {
+  return `Đặt lại mật khẩu\n\nChúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản quản trị này. Mã xác nhận của bạn là:\n\n${otp}\n\nMã có hiệu lực trong thời gian ngắn. Nếu bạn không yêu cầu điều này, có thể bỏ qua email này.`;
 }
 
 export async function POST(request: NextRequest) {
@@ -43,11 +51,7 @@ export async function POST(request: NextRequest) {
   }
 
   const admin = createAdminClient();
-  const { data, error } = await admin.auth.admin.generateLink({
-    type: "recovery",
-    email,
-    options: { redirectTo: `${request.nextUrl.origin}/reset-password` },
-  });
+  const { data, error } = await admin.auth.admin.generateLink({ type: "recovery", email });
 
   // Don't reveal whether an email is registered, and only ever email staff
   // accounts from this app — customers reset their own password from the
@@ -58,8 +62,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  const actionLink = data.properties?.action_link;
-  if (!actionLink) {
+  const otp = data.properties?.email_otp;
+  if (!otp) {
     return NextResponse.json({ error: "server_error" }, { status: 500 });
   }
 
@@ -68,9 +72,9 @@ export async function POST(request: NextRequest) {
     await transporter.sendMail({
       from: `"VERITY GEAR Admin" <${getMailFrom()}>`,
       to: email,
-      subject: "Đặt lại mật khẩu - VERITY GEAR Admin",
-      text: resetPasswordEmailText(actionLink),
-      html: resetPasswordEmailHtml(actionLink),
+      subject: "Mã đặt lại mật khẩu - VERITY GEAR Admin",
+      text: resetPasswordEmailText(otp),
+      html: resetPasswordEmailHtml(otp),
     });
   } catch (err) {
     console.error("Failed to send password reset email:", err);

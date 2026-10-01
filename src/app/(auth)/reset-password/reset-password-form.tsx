@@ -1,40 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PasswordInput } from "@/components/password-input";
 
-export function ResetPasswordForm() {
+export function ResetPasswordForm({ email }: { email: string }) {
   const router = useRouter();
   const supabase = createClient();
 
-  const [checking, setChecking] = useState(true);
-  const [hasRecoverySession, setHasRecoverySession] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") setHasRecoverySession(true);
-    });
-
-    // The recovery link logs the user in via a special session — if one
-    // already exists by the time this page mounts, treat it as valid too.
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) setHasRecoverySession(true);
-      setChecking(false);
-    });
-
-    return () => sub.subscription.unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const code = (formData.get("code") as string).trim();
     const password = formData.get("password") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
 
@@ -49,11 +32,19 @@ export function ResetPasswordForm() {
 
     setSubmitting(true);
     setError(null);
-    const { error } = await supabase.auth.updateUser({ password });
+
+    const { error: verifyError } = await supabase.auth.verifyOtp({ email, token: code, type: "recovery" });
+    if (verifyError) {
+      setSubmitting(false);
+      setError("Mã xác nhận không đúng hoặc đã hết hạn.");
+      return;
+    }
+
+    const { error: updateError } = await supabase.auth.updateUser({ password });
     setSubmitting(false);
 
-    if (error) {
-      setError(error.message);
+    if (updateError) {
+      setError(updateError.message);
       return;
     }
 
@@ -65,22 +56,20 @@ export function ResetPasswordForm() {
     <div className="w-full max-w-sm">
       <div className="mb-8 text-center">
         <h1 className="text-2xl font-semibold text-zinc-900">Đặt lại mật khẩu</h1>
-        <p className="mt-1 text-sm text-zinc-500">Nhập mật khẩu mới cho tài khoản của bạn.</p>
+        <p className="mt-1 text-sm text-zinc-500">
+          {email ? `Nhập mã xác nhận đã gửi tới ${email} và mật khẩu mới.` : "Nhập mã xác nhận và mật khẩu mới."}
+        </p>
       </div>
 
       {success ? (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
           Đã đặt lại mật khẩu! Đang chuyển hướng...
         </div>
-      ) : checking ? (
-        <p className="text-center text-sm text-zinc-500">Đang kiểm tra liên kết...</p>
-      ) : !hasRecoverySession ? (
+      ) : !email ? (
         <div className="space-y-4 text-center">
-          <p className="text-sm text-zinc-500">
-            Liên kết không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu liên kết mới.
-          </p>
+          <p className="text-sm text-zinc-500">Không tìm thấy yêu cầu đặt lại mật khẩu.</p>
           <Link href="/forgot-password" className="text-sm font-semibold text-zinc-900 underline">
-            Yêu cầu liên kết mới
+            Yêu cầu mã mới
           </Link>
         </div>
       ) : (
@@ -90,6 +79,22 @@ export function ResetPasswordForm() {
               {error}
             </div>
           )}
+          <div>
+            <label htmlFor="code" className="mb-1 block text-sm font-medium text-zinc-700">
+              Mã xác nhận (8 số)
+            </label>
+            <input
+              id="code"
+              name="code"
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={8}
+              required
+              placeholder="00000000"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-center text-sm tracking-[0.5em] text-zinc-900 placeholder-zinc-400 transition focus:outline-none focus:ring-2 focus:ring-zinc-900"
+            />
+          </div>
           <div>
             <label htmlFor="password" className="mb-1 block text-sm font-medium text-zinc-700">
               Mật khẩu mới
