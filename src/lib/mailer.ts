@@ -4,6 +4,15 @@ export function hasSmtpConfig(): boolean {
   return !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
 }
 
+// The "From" address shown to recipients. Separate from SMTP_USER because
+// transactional relays (Brevo, SendGrid, ...) authenticate SMTP with the
+// provider account's own login, which is often not the verified sending
+// address itself — MAIL_FROM lets that differ. Falls back to SMTP_USER for
+// providers where they're the same thing (Gmail, Zoho: login = from address).
+export function getMailFrom(): string {
+  return process.env.MAIL_FROM || process.env.SMTP_USER || "";
+}
+
 export function getTransporter() {
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST,

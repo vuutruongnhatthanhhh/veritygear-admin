@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getTransporter, hasSmtpConfig, emailLayout, emailButtonHtml } from "@/lib/mailer";
+import { getTransporter, hasSmtpConfig, getMailFrom, emailLayout, emailButtonHtml } from "@/lib/mailer";
 import { isRateLimited, getClientIp } from "@/lib/rateLimit";
 
 function resetPasswordEmailHtml(actionLink: string) {
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
   try {
     const transporter = getTransporter();
     await transporter.sendMail({
-      from: `"VERITY GEAR Admin" <${process.env.SMTP_USER}>`,
+      from: `"VERITY GEAR Admin" <${getMailFrom()}>`,
       to: email,
       subject: "Đặt lại mật khẩu - VERITY GEAR Admin",
       text: resetPasswordEmailText(actionLink),
