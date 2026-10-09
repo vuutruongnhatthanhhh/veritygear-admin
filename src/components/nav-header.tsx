@@ -64,6 +64,7 @@ const navItems: NavGroup[] = [
       { href: "/san-pham/banner", label: "Banner" },
       { href: "/san-pham", label: "Sản phẩm" },
       { href: "/san-pham/danh-muc", label: "Danh mục" },
+      { href: "/san-pham/bao-hanh", label: "Bảo hành & giao hàng" },
     ],
   },
   {

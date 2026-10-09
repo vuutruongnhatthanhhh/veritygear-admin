@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { BilingualPair } from "@/components/bilingual-pair";
+import { ImageField } from "@/components/image-field";
 import { Toast } from "@/components/toast";
 import { upsertProductSpotlight } from "./actions";
 
@@ -10,6 +11,7 @@ type ProductSpotlight = {
   eyebrow_en: string;
   cta_label_vi: string;
   cta_label_en: string;
+  image_url: string | null;
 } | null;
 
 export function ProductSpotlightForm({ content }: { content: ProductSpotlight }) {
@@ -28,6 +30,8 @@ export function ProductSpotlightForm({ content }: { content: ProductSpotlight })
         <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
       )}
       {saved && <Toast message="Đã lưu thay đổi" onDone={() => setSaved(false)} />}
+
+      <ImageField label="Ảnh nền" initialUrl={content?.image_url ?? null} bucket="home-images" pickerTitle="Chọn ảnh nền sản phẩm chủ lực" />
 
       <BilingualPair label="Nhãn nhỏ (eyebrow)" nameVi="eyebrow_vi" nameEn="eyebrow_en" defaultVi={content?.eyebrow_vi} defaultEn={content?.eyebrow_en} />
       <BilingualPair label="Nhãn nút CTA" nameVi="cta_label_vi" nameEn="cta_label_en" defaultVi={content?.cta_label_vi} defaultEn={content?.cta_label_en} />

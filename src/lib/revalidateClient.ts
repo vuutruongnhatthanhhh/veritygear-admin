@@ -51,6 +51,13 @@ export function revalidateProduct(slug: string): Promise<void> {
   });
 }
 
+// The 3 trust badges render on every product detail page (an unbounded,
+// per-slug route that can't be enumerated like revalidateProduct(slug)) —
+// a full layout-wide nuke is the simplest way to reach all of them at once.
+export function revalidateProductGuarantees(): Promise<void> {
+  return revalidateClient({ layoutPaths: ["/[locale]"] });
+}
+
 export function revalidateNewsList(): Promise<void> {
   return revalidateClient({ paths: [...withLocales("/"), ...withLocales("/tin-tuc")] });
 }
