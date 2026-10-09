@@ -18,7 +18,7 @@ type Links = {
 
 const PLATFORMS = [
   { key: "facebook", label: "Facebook", placeholder: "https://facebook.com/veritygear" },
-  { key: "instagram", label: "Instagram", placeholder: "https://instagram.com/veritygear" },
+  { key: "instagram", label: "X", placeholder: "https://x.com/veritygear" },
   { key: "tiktok", label: "TikTok", placeholder: "https://tiktok.com/@veritygear" },
   { key: "youtube", label: "YouTube", placeholder: "https://youtube.com/@veritygear" },
 ] as const;

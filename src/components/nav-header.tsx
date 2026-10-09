@@ -61,6 +61,7 @@ const navItems: NavGroup[] = [
   {
     label: "Sản phẩm",
     children: [
+      { href: "/san-pham/banner", label: "Banner" },
       { href: "/san-pham", label: "Sản phẩm" },
       { href: "/san-pham/danh-muc", label: "Danh mục" },
     ],
@@ -68,6 +69,7 @@ const navItems: NavGroup[] = [
   {
     label: "Tin tức",
     children: [
+      { href: "/tin-tuc/banner", label: "Banner" },
       { href: "/tin-tuc", label: "Bài viết" },
       { href: "/tin-tuc/danh-muc", label: "Danh mục" },
     ],
