@@ -81,6 +81,11 @@ export default async function SanPhamPage() {
                         Lineup
                       </span>
                     )}
+                    {item.is_out_of_stock && (
+                      <span className="shrink-0 rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-xs text-red-700">
+                        Hết hàng
+                      </span>
+                    )}
                   </div>
                   <div className="mt-0.5 truncate text-xs text-zinc-400">
                     {item.product_categories?.name_vi ?? "Chưa phân loại"} · {formatVnd(item.price)}

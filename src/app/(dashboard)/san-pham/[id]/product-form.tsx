@@ -29,6 +29,7 @@ type Product = {
   is_featured: boolean;
   is_spotlight: boolean;
   is_lineup: boolean;
+  is_out_of_stock: boolean;
   sort_order: number;
   weight_grams: number;
 };
@@ -135,6 +136,10 @@ export function ProductForm({
         <label className="flex items-center gap-2 text-sm text-zinc-700">
           <input type="checkbox" name="is_lineup" defaultChecked={item?.is_lineup ?? false} className="rounded border-zinc-300" />
           Lineup mới (trang Cột mốc)
+        </label>
+        <label className="flex items-center gap-2 text-sm text-zinc-700">
+          <input type="checkbox" name="is_out_of_stock" defaultChecked={item?.is_out_of_stock ?? false} className="rounded border-zinc-300" />
+          Hết hàng (khóa nút thêm vào giỏ)
         </label>
       </div>
 
