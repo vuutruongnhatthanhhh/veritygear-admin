@@ -88,6 +88,7 @@ const navItems: NavGroup[] = [
       { href: "/cau-hinh/seo", label: "SEO" },
       { href: "/cau-hinh/mang-xa-hoi", label: "Mạng xã hội" },
       { href: "/cau-hinh/footer", label: "Footer" },
+      { href: "/cau-hinh/khoa-website", label: "Khóa website" },
     ],
   },
   {
