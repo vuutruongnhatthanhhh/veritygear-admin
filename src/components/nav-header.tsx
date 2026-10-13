@@ -46,6 +46,7 @@ const navItems: NavGroup[] = [
     children: [
       { href: "/cot-moc/banner", label: "Banner" },
       { href: "/cot-moc/hanh-trinh", label: "Hành trình" },
+      { href: "/cot-moc/lineup-san-pham", label: "Lineup sản phẩm" },
     ],
   },
   {
