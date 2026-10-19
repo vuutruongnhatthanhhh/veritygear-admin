@@ -31,7 +31,7 @@ export default async function DonHangPage() {
   const supabase = await createClient();
   const { data: orders, error } = await supabase
     .from("orders")
-    .select("id, order_code, full_name, phone, total, status, payment_method, payment_status, created_at")
+    .select("id, order_code, full_name, phone, total, status, payment_method, payment_status, currency, created_at")
     .order("created_at", { ascending: false });
 
   return (
@@ -73,6 +73,11 @@ export default async function DonHangPage() {
                     {o.payment_method === "transfer" && o.payment_status !== "paid" && (
                       <span className="shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs text-amber-700">
                         Chưa thanh toán
+                      </span>
+                    )}
+                    {o.currency === "USD" && (
+                      <span className="shrink-0 rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs text-zinc-600">
+                        USD
                       </span>
                     )}
                   </div>

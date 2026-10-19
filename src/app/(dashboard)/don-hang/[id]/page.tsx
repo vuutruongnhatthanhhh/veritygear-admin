@@ -84,6 +84,12 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <p className="text-sm text-zinc-900">
             {order.payment_method === "cod" ? "Thanh toán khi nhận hàng (COD)" : "Chuyển khoản ngân hàng (PayOS)"}
           </p>
+          {order.currency === "USD" && (
+            <p className="mt-2 text-xs text-zinc-500">
+              Khách xem giá bằng USD (tỷ giá lúc đặt: 1 USD = {formatVnd(order.exchange_rate)}). Số tiền thanh toán
+              thực tế vẫn tính bằng VNĐ như bên dưới.
+            </p>
+          )}
           {order.payment_method === "transfer" && (
             <span
               className={`mt-2 inline-block rounded-full border px-2.5 py-1 text-xs ${

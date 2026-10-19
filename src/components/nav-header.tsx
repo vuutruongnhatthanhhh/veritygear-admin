@@ -81,6 +81,8 @@ const navItems: NavGroup[] = [
     children: [
       { href: "/don-hang", label: "Danh sách đơn hàng" },
       { href: "/cau-hinh/van-chuyen", label: "Vận chuyển" },
+      { href: "/cau-hinh/ty-gia", label: "Tỷ giá USD/VNĐ" },
+      { href: "/cau-hinh/dieu-khoan", label: "Điều khoản & Điều kiện" },
     ],
   },
   {
