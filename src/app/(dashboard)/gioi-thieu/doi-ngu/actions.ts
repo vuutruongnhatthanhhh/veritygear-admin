@@ -21,6 +21,8 @@ export async function upsertTeamMember(_prev: string | null, formData: FormData)
     name: formData.get("name") as string,
     role_vi: formData.get("role_vi") as string,
     role_en: formData.get("role_en") as string,
+    region: (formData.get("region") as string) === "global" ? "global" : "vn",
+    social_url: ((formData.get("social_url") as string) ?? "").trim(),
     updated_at: new Date().toISOString(),
   };
 

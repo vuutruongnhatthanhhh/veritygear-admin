@@ -46,7 +46,12 @@ export default async function DoiNguPage() {
               items.map((item) => (
                 <div key={item.id} className="flex items-center gap-4 bg-white px-4 py-3">
                   <div className="min-w-0 flex-1">
-                    <span className="truncate text-sm font-medium text-zinc-900">{item.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="truncate text-sm font-medium text-zinc-900">{item.name}</span>
+                      <span className="shrink-0 rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[10px] uppercase text-zinc-500">
+                        {item.region === "global" ? "Global" : "Việt Nam"}
+                      </span>
+                    </div>
                     <div className="truncate text-xs text-zinc-400">{item.role_vi}</div>
                   </div>
 

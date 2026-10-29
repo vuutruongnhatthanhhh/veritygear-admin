@@ -16,6 +16,8 @@ type TeamMember = {
   role_vi: string;
   role_en: string;
   image_url: string | null;
+  region: "vn" | "global";
+  social_url: string;
 };
 
 export function TeamMemberForm({ item }: { item: TeamMember | null }) {
@@ -53,6 +55,26 @@ export function TeamMemberForm({ item }: { item: TeamMember | null }) {
       </div>
 
       <BilingualPair label="Vai trò" nameVi="role_vi" nameEn="role_en" defaultVi={item?.role_vi} defaultEn={item?.role_en} required />
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-sm font-medium text-zinc-700">Nhóm</label>
+          <select name="region" defaultValue={item?.region ?? "vn"} className={inputCls}>
+            <option value="vn">Việt Nam</option>
+            <option value="global">Global</option>
+          </select>
+        </div>
+        <div>
+          <label className="mb-1 block text-sm font-medium text-zinc-700">Link mạng xã hội</label>
+          <input
+            name="social_url"
+            type="text"
+            defaultValue={item?.social_url ?? ""}
+            placeholder="https://instagram.com/..."
+            className={inputCls}
+          />
+        </div>
+      </div>
 
       <div className="flex items-center gap-4">
         <button
